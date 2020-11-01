@@ -1,4 +1,6 @@
 *
+!spreadsheets/
+!spreadsheets/*.xlsx
 !in/
 !in/**/*
 !.gitignore
