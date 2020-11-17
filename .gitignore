@@ -1,0 +1,9 @@
+*
+!spreadsheets/
+!spreadsheets/*.xlsx
+!in/
+!in/**/*
+!.gitignore
+!docs/
+!README.md
+.DS_Store
