@@ -1,9 +1,2 @@
-*
-!spreadsheets/
-!spreadsheets/*.xlsx
-!in/
-!in/**/*
-!.gitignore
-!docs/
-!README.md
+__pycache__/
 .DS_Store
