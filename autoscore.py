@@ -58,6 +58,7 @@ def loss(B, P, R, J):
     return int(F)
 
 
+status = 0
 print(f"[run] path = {PATH_PREFIX}/out/*/")
 for path_dir in glob(f"{PATH_PREFIX}/out/*/"):
     person = path_dir.split("/")[-2]
@@ -67,13 +68,17 @@ for path_dir in glob(f"{PATH_PREFIX}/out/*/"):
     for path in glob(f"{path_dir}/*.txt"):
         instance_idx = path.replace(path_dir, "").replace(".txt", "")
         print("\t--->", instance_idx, end=" | ")
-        B, P, R = get_instance(instance_idx)
-        score, J = get_solution(path)
-        score_verify = loss(B, P, R, J)
-        print(f"score_out={score} score_verify={score_verify}", end=" ")
-        if abs(score - score_verify) <= 1:
-            print("\033[92mOK\033[0m")
-        else:
+        try:
+            B, P, R = get_instance(instance_idx)
+            score, J = get_solution(path)
+            score_verify = loss(B, P, R, J)
+            print(f"score_out={score} score_verify={score_verify}", end=" ")
+            if abs(score - score_verify) <= 1:
+                print("\033[92mOK\033[0m")
+            else:
+                print("\033[91mNO\033[0m")
+                status = 1
+        except:
             print("\033[91mNO\033[0m")
-            sys.exit(1)
-sys.exit(0)
+            status = 1
+sys.exit(status)
