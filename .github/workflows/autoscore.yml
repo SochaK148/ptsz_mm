@@ -20,6 +20,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
+    - name: Install deps
+      run: |
+        pip3 install numpy
     - name: Autoscore @maciejczyzewski
       run: |
         python3 autoscore.py
