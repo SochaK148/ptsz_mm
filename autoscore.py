@@ -1,4 +1,5 @@
 from glob import glob
+import traceback
 import numpy as np
 import sys
 print("[AUTOSCORE]")
@@ -60,25 +61,44 @@ def loss(B, P, R, J):
 
 status = 0
 print(f"[run] path = {PATH_PREFIX}/out/*/")
+status_dict = {}
 for path_dir in glob(f"{PATH_PREFIX}/out/*/"):
+    status_local = 0
     person = path_dir.split("/")[-2]
     if not person.isdigit():
         continue
     print(f"\033[92m[{person}]\033[0m verification")
-    for path in glob(f"{path_dir}/*.txt"):
-        instance_idx = path.replace(path_dir, "").replace(".txt", "")
-        print("\t--->", instance_idx, end=" | ")
+    for path in glob(f"{path_dir}/*.txt") + glob(f"{path_dir}/*/*.txt"):
+        instance_idx = path.replace(path_dir, "")\
+            .replace(".txt_results", "").replace(".txt", "")
+        if "/" in instance_idx:
+            instance_idx = instance_idx.split("/")[-1]
+        print(f"\t---> {instance_idx:12} | ", end="")
         try:
             B, P, R = get_instance(instance_idx)
             score, J = get_solution(path)
             score_verify = loss(B, P, R, J)
-            print(f"score_out={score} score_verify={score_verify}", end=" ")
+            print(
+                f"score_out={score:10} score_verify={score_verify:10}", end=" ")
             if abs(score - score_verify) <= 1:
                 print("\033[92mOK\033[0m")
             else:
                 print("\033[91mNO\033[0m")
-                status = 1
-        except:
+                status = status_local = 1
+        except AssertionError as error:
+            _, _, tb = sys.exc_info()
+            tb_info = traceback.extract_tb(tb)
+            filename, line, func, text = tb_info[-1]
+
+            print(f"\t[wrong format] {text} ", end="")
             print("\033[91mNO\033[0m")
-            status = 1
+            status = status_local = 1
+    status_dict[person] = status_local
+print("====== RESULT ======")
+for person in status_dict:
+    print(f"[{person}] ", end="")
+    if status_dict[person] == 0:
+        print("\033[92mOK\033[0m")
+    else:
+        print("\033[91mNO\033[0m")
 sys.exit(status)
