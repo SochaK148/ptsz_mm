@@ -130,10 +130,13 @@ for path_dir in glob(f"{PATH_PREFIX}/out/*/"):
     else:
         status_dict[person] = round(status_sum, 1)
 print("====== RESULT ======")
-for person in status_dict:
+for person in EXCEL:
     print(f"[{person}] ", end="")
-    if status_dict[person] > 0:
-        print(f"\033[92mOK\033[0m sum={status_dict[person]}")
+    if str(person) not in status_dict.keys():
+        print("no out files")
+        continue
+    if status_dict[str(person)] > 0:
+        print(f"\033[92mOK\033[0m sum={status_dict[str(person)]}")
     else:
         print("\033[91mNO\033[0m")
 sys.exit(status)
