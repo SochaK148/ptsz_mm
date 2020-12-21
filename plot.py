@@ -85,7 +85,7 @@ fig.set_size_inches(8, 2.5)
 
 plt.ylabel('score ratio (best/out)')
 plt.legend(loc="lower center", bbox_to_anchor=(0.5, 1),  ncol=7)
-plt.xlabel('cases')
+plt.xlabel('cases (sorted by score)')
 
 ax.set_ylim([0.95, val_max])
 plt.savefig('score.jpg')
