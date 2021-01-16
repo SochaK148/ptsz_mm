@@ -57,13 +57,19 @@ for path in glob("score_*.txt"):
     for i in range(len(data)):
         data_all[i].append(data[i])
 
+data_all_plot = []
+for i in range(len(EXCEL)*len(RANGE)):
+    data_all_plot.append([])
+
 val_min, val_max = +oo, -oo
 for path in glob("score_*.txt"):
     print(f"path --> {path}")
     idx = int(path.replace("score_", "").replace(".txt", ""))
     data = get_data(path)
     for i in range(len(data)):
-        data[i] = np.min(data_all[i]) / data[i]
+        val = np.min(data_all[i]) / data[i]
+        data_all_plot[i].append(val)
+        data[i] = val
     data = sorted(data)
     val_min = min(val_min, min(data))
     val_max = max(val_max, max(data))
@@ -75,7 +81,13 @@ for path in glob("score_*.txt"):
     plt.plot(range(len(data)), data, label=idx, c=color)
     # plt.scatter(range(len(data)), data, label=idx, c=color, s=1)
 
-plt.plot(range(len(data)), [1]*len(data), c="gray",
+avg_line = []
+for i in range(len(data)):
+    avg_line.append(np.mean(data_all_plot[i]))
+avg_line = sorted(avg_line)
+
+avg_line = [1]*len(data) # FIXME
+plt.plot(range(len(data)), avg_line, c="gray",
          linestyle="-", linewidth=10, alpha=0.2)
 
 ax = plt.gca()
